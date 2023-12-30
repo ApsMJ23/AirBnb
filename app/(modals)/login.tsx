@@ -3,14 +3,41 @@ import {useWarmUpBrowser} from "../../hooks/useWarmUpBrowser";
 import {defaultStyles} from "../../constants/Styles";
 import Colors from "../../constants/Colors";
 import {Ionicons} from "@expo/vector-icons";
-import {useSignIn, useSignUp} from "@clerk/clerk-expo";
+import {useOAuth, useSignIn, useSignUp} from "@clerk/clerk-expo";
 import {useEffect, useState} from "react";
 import Spinner from "react-native-loading-spinner-overlay";
-import {router} from "expo-router";
+import { useRouter} from "expo-router";
 
+enum AuthType{
+    Google = 'oauth_google',
+    Apple = 'oauth_apple',
+    Facebook = 'oauth_facebook',
+}
 
 const Login=()=>{
     useWarmUpBrowser();
+    const router = useRouter();
+    const {startOAuthFlow: appleAuth} = useOAuth({strategy:'oauth_apple'});
+    const {startOAuthFlow: googleAuth} = useOAuth({strategy:'oauth_google'});
+    const {startOAuthFlow:facebookAuth} = useOAuth({strategy:'oauth_facebook'});
+
+    const onSelectAuth = async(type:AuthType)=>{
+         const selectedAuth ={
+             [AuthType.Apple]:appleAuth,
+            [AuthType.Google]:googleAuth,
+            [AuthType.Facebook]:facebookAuth,
+         }[type];
+
+         try{
+             const {createdSessionId,setActive} = await selectedAuth();
+             if(createdSessionId){
+                 setActive!({session:createdSessionId});
+                 router.back();
+             }
+         }catch (err:any) {
+             alert(err.errors[0].message)
+         }
+    }
     const {signIn,setActive,isLoaded} = useSignIn()
     const {signUp} = useSignUp();
     const [emailAddress,setEmailAddress] = useState('');
@@ -100,15 +127,15 @@ const Login=()=>{
                     <Ionicons name="call-outline" size={24} style={defaultStyles.btnIcon} />
                     <Text style={styles.btnOutlineText}>Continue with Phone</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnOutline}>
+                <TouchableOpacity onPress={()=>onSelectAuth(AuthType.Apple)} style={styles.btnOutline}>
                     <Ionicons name="md-logo-apple" size={24} style={defaultStyles.btnIcon} />
                     <Text style={styles.btnOutlineText}>Continue with Apple</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnOutline}>
+                <TouchableOpacity onPress={()=>onSelectAuth(AuthType.Google)} style={styles.btnOutline}>
                     <Ionicons name="md-logo-google" size={24} style={defaultStyles.btnIcon} />
                     <Text style={styles.btnOutlineText}>Continue with Google</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnOutline}>
+                <TouchableOpacity onPress={()=>onSelectAuth(AuthType.Facebook)} style={styles.btnOutline}>
                     <Ionicons name="md-logo-facebook" size={24} style={defaultStyles.btnIcon} />
                     <Text style={styles.btnOutlineText}>Continue with Facebook</Text>
                 </TouchableOpacity>

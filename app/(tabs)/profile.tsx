@@ -1,13 +1,13 @@
 import {Button, Text, View} from "react-native";
 import {useAuth} from "@clerk/clerk-expo";
-import {Link, router} from "expo-router";
+import {Link} from "expo-router";
 
 
 const Profile = () => {
     const {signOut,isSignedIn} = useAuth();
 
-    const handleSignout = async()=>{
-        await signOut(()=>router.push('/(tabs)/'));
+    const handleSignout = ()=>{
+        signOut();
     }
     return(
         <View>
