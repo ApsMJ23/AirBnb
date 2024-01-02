@@ -29,7 +29,7 @@ const Login=()=>{
          }[type];
 
          try{
-             const {createdSessionId,setActive} = await selectedAuth();
+             const {createdSessionId,setActive,authSessionResult} = await selectedAuth();
              if(createdSessionId){
                  setActive!({session:createdSessionId});
                  router.back();
