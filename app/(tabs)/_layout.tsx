@@ -17,6 +17,8 @@ const Layout = ()=>{
                 tabBarIcon: ({ color, size }) => <Ionicons name='search' color={color} size={size} />
             }}/>
             <Tabs.Screen name='wishList' options={{
+                headerTransparent:true,
+                headerShown:false,
                 tabBarLabel:'WishList',
                 tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name='heart-outline' color={color} size={size} />
             }}/>

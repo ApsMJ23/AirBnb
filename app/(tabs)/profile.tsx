@@ -102,6 +102,13 @@ const Profile = () => {
                     <Text>Since {user.createdAt?.toLocaleDateString()}</Text>
                 </View>
             )}
+            <TouchableOpacity style={[styles.card,{flexDirection:'row'}]}>
+                <View style={{gap:5,width:'70%'}}>
+                    <Text style={{fontFamily:'mon-sb',fontSize:18}}>AirBnb your Place</Text>
+                    <Text style={{fontFamily:'mon',fontSize:12}}>It's simple to get set up and start earning.</Text>
+                </View>
+                <Image source={{uri:'https://vectorportal.com/storage/cute-house-icon.jpg'}} style={{width:'30%',height:100}}/>
+            </TouchableOpacity>
             {isSignedIn && <Button title='Log Out' onPress={handleSignout} color={Colors.dark}/>}
             {!isSignedIn &&
                 <Link href={'/(modals)/login'} asChild>
